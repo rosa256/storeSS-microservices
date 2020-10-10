@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  config-service:
+    image: config-service-image
+    container_name: configserver-container
+    build: config-service/
+    ports:
+      - "8888:8888"
+    depends_on:
+      - services-registry
+    restart: on-failure
+    links:
+      - services-registry
+
+  services-registry:
+    image: servicesregistry-container
+    container_name: eurekaserver-container
+    build: services-registry/
+    ports:
+      - "8761:8761"
