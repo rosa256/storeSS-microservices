@@ -1,3 +1,4 @@
+#Bootsrap.yaml file loading earlier than application.properties file.
 server:
   port: 8888
 spring:

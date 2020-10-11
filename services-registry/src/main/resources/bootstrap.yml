@@ -4,8 +4,3 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
-
-eureka:
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
