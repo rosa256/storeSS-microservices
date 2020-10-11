@@ -7,11 +7,7 @@ services:
     build: config-service/
     ports:
       - "8888:8888"
-    depends_on:
-      - services-registry
     restart: on-failure
-    links:
-      - services-registry
 
   services-registry:
     image: services-registry-container
@@ -19,3 +15,5 @@ services:
     build: services-registry/
     ports:
       - "8761:8761"
+    depends_on:
+      - config-service
