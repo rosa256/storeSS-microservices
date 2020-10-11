@@ -1,10 +1,9 @@
 version: '3'
 
 services:
-
   config-service:
     image: config-service-image
-    container_name: configserver-container
+    container_name: config-server-container
     build: config-service/
     ports:
       - "8888:8888"
@@ -15,7 +14,7 @@ services:
       - services-registry
 
   services-registry:
-    image: servicesregistry-container
+    image: services-registry-container
     container_name: eurekaserver-container
     build: services-registry/
     ports:
