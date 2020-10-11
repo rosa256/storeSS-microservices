@@ -8,6 +8,9 @@ services:
     ports:
       - "8888:8888"
     restart: on-failure
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://services-registry:8761/eureka
 
   services-registry:
     image: services-registry-container
@@ -17,3 +20,6 @@ services:
       - "8761:8761"
     depends_on:
       - config-service
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://services-registry:8761/eureka

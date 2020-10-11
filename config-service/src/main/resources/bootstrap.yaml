@@ -19,7 +19,4 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://services-registry:8761/eureka
-
-some:
-  var: abc
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
