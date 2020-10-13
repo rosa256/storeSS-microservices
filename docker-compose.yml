@@ -7,19 +7,45 @@ services:
     build: config-service/
     ports:
       - "8888:8888"
+    hostname: config-service
     restart: on-failure
     environment:
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://services-registry:8761/eureka
 
   services-registry:
-    image: services-registry-container
-    container_name: eurekaserver-container
+    image: services-registry-image
+    container_name: eureka-server-container
     build: services-registry/
     ports:
       - "8761:8761"
+    hostname: services-registry
     depends_on:
       - config-service
     environment:
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://services-registry:8761/eureka
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://config-service:8888"]
+      interval: 3s
+      timeout: 5s
+      retries: 3
+
+  images-service:
+    image: images-service-image
+    container_name: images-service-container
+    build: images-service/
+    ports:
+      - "8084:8084"
+    hostname: images-service
+    depends_on:
+      - config-service
+      - services-registry
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://services-registry:8761/eureka
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://services-registry:8761"]
+      interval: 3s
+      timeout: 5s
+      retries: 3
