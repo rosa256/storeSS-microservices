@@ -23,7 +23,7 @@ services:
     depends_on:
       - config-service
     environment:
-      WAIT_HOSTS: config-service:8888
+      - WAIT_HOSTS=config-service:8888
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://services-registry:8761/eureka
 
