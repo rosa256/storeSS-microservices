@@ -66,3 +66,17 @@ services:
     environment:
       - WAIT_HOSTS=config-service:8888, services-registry:8761
       - EUREKA_SERVER=http://services-registry:8761/eureka
+
+  services-gateway:
+    image: services-gateway-image
+    container_name: services-gateway-container
+    hostname: services-gateway
+    ports:
+    - "8000:8000"
+    build: services-gateway
+    depends_on:
+      - config-service
+      - services-registry
+    environment:
+      - WAIT_HOSTS=config-service:8888, services-registry:8761, orders-service:8081, products-service:8083
+      - EUREKA_SERVER=http://services-registry:8761/eureka
