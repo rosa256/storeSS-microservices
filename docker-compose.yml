@@ -10,8 +10,7 @@ services:
     hostname: config-service
     restart: on-failure
     environment:
-      - JAVA_OPTS=
-        -DEUREKA_SERVER=http://services-registry:8761/eureka
+      - EUREKA_SERVER=http://services-registry:8761/eureka
 
   services-registry:
     image: services-registry-image
@@ -24,8 +23,7 @@ services:
       - config-service
     environment:
       - WAIT_HOSTS=config-service:8888
-      - JAVA_OPTS=
-        -DEUREKA_SERVER=http://services-registry:8761/eureka
+      - EUREKA_SERVER=http://services-registry:8761/eureka
 
   images-service:
     image: images-service-image
@@ -39,8 +37,7 @@ services:
       - services-registry
     environment:
       - WAIT_HOSTS=config-service:8888, services-registry:8761
-      - JAVA_OPTS=
-        -DEUREKA_SERVER=http://services-registry:8761/eureka
+      - EUREKA_SERVER=http://services-registry:8761/eureka
 
   products-service:
     image: products-service-image
