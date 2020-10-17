@@ -1,0 +1,13 @@
+server:
+  port: 8000
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+zuul:
+  prefix: /api
+  ignoredServices: '*'
+  routes:
+    images-service:
+      path: /images/**
+      serviceId: images-service
