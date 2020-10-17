@@ -41,3 +41,17 @@ services:
       - WAIT_HOSTS=config-service:8888, services-registry:8761
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://services-registry:8761/eureka
+
+  products-service:
+    image: products-service-image
+    container_name: products-service-container
+    build: products-service/
+    ports:
+      - "8083:8083"
+    hostname: products-service
+    depends_on:
+      - config-service
+      - services-registry
+    environment:
+      - WAIT_HOSTS=config-service:8888, services-registry:8761
+      - EUREKA_SERVER=http://services-registry:8761/eureka
