@@ -6,6 +6,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,13 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 public class ImageController {
+
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public ImageController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @RequestMapping(
             method = RequestMethod.GET,
