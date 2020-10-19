@@ -11,3 +11,7 @@ zuul:
     images-service:
       path: /images/**
       serviceId: images-service
+
+    products-service:
+      path: /products/**
+      serviceId: products-service
