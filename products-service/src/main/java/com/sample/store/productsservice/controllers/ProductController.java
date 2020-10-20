@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,14 @@ public class ProductController {
         return productService.getRecommendedProducts();
     }
 
+    @GetMapping("/kategoria/{category}")
+    //TODO:Checking if category exist
+    public List<Product> getProductsByCategory(@PathVariable String category){
+        return productService.getProductsByCategory(category);
+    }
 
-    @GetMapping("/addProducts")
+
+    @PostConstruct
     public void addProducts(){
         List<Product> products = new ArrayList<>();
         products.add(new Product(1,"Bluza 1","bluza-1","","",ProductCategory.BLUZA, "picture1",new BigDecimal(10), false));
