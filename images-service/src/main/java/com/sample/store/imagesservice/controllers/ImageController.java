@@ -1,7 +1,6 @@
 package com.sample.store.imagesservice.controllers;
 
 import com.sample.store.imagesservice.models.ProductImageLinks;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -28,15 +27,17 @@ public class ImageController {
 
     @RequestMapping(
             method = RequestMethod.GET,
-            value = {"/kategoria/{category}/{nameUrl}"},
+            value = {"/kategoria/{category}/{nameUrl}", "/kategoria/{category}/{nameUrl}/{nameUrlHovered}"},
             produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<InputStreamResource> getImageLink(
+    public ResponseEntity<InputStreamResource> getImage(
             @PathVariable String category,
-            @PathVariable String nameUrl) throws IOException {
+            @PathVariable String nameUrl,
+            @PathVariable(required = false) String nameUrlHovered) throws IOException {
+
         category = category.toLowerCase();
         ClassPathResource imgFile;
-        if(nameUrl.contains("hovered"))
-            imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl.replace("-hovered", "") + "/"+ nameUrl + ".jpg");
+        if(nameUrlHovered != null)
+            imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrlHovered + ".jpg");
         else
             imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrl + ".jpg");
 
@@ -47,7 +48,7 @@ public class ImageController {
     }
 
     //TODO:Propably have to fix when Integration with react app.
-//    @RequestMapping(value="/kategoria/{category}/{productNameUrl}", method = RequestMethod.GET)
+//    @RequestMapping(value="/kategoria/{category}/details/{productNameUrl}", method = RequestMethod.GET)
 //    public List<String> getProductImagesLinks(@PathVariable String category, @PathVariable String productNameUrl) throws IOException {
 //        List<String> productImagesLinks = new ArrayList<>();
 //        category = category.toLowerCase();
