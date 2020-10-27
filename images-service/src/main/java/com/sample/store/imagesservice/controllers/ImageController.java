@@ -1,6 +1,7 @@
 package com.sample.store.imagesservice.controllers;
 
 import com.sample.store.imagesservice.models.ProductImageLinks;
+import com.sample.store.imagesservice.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -9,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+
+import java.io.*;
+
 import java.util.List;
 
 @CrossOrigin("*")
@@ -19,25 +20,29 @@ import java.util.List;
 public class ImageController {
 
     private RestTemplate restTemplate;
+    private ImageService imageService;
 
     @Autowired
-    public ImageController(RestTemplate restTemplate) {
+    public ImageController(RestTemplate restTemplate, ImageService imageService) {
         this.restTemplate = restTemplate;
+        this.imageService = imageService;
     }
 
     @RequestMapping(
             method = RequestMethod.GET,
-            value = {"/kategoria/{category}/{nameUrl}", "/kategoria/{category}/{nameUrl}/{nameUrlHovered}"},
+            value = {"/kategoria/{category}/{nameUrl}", "/kategoria/{ category}/{nameUrl}/{nameUrlExtra}"},
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<InputStreamResource> getImage(
             @PathVariable String category,
             @PathVariable String nameUrl,
-            @PathVariable(required = false) String nameUrlHovered) throws IOException {
+            @PathVariable(required = false) String nameUrlExtra) throws IOException {
 
         category = category.toLowerCase();
         ClassPathResource imgFile;
-        if(nameUrlHovered != null)
-            imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrlHovered + ".jpg");
+        if(nameUrlExtra != null && nameUrlExtra.contains("hovered"))
+            imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrlExtra + ".jpg");
+        else if(nameUrlExtra !=null && nameUrlExtra.contains("big"))
+            imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrlExtra + ".jpg");
         else
             imgFile = new ClassPathResource("static/products/"+ category +"/"+ nameUrl + "/"+ nameUrl + ".jpg");
 
@@ -47,55 +52,23 @@ public class ImageController {
                 .body(new InputStreamResource(imgFile.getInputStream()));
     }
 
-    //TODO:Propably have to fix when Integration with react app.
-//    @RequestMapping(value="/kategoria/{category}/details/{productNameUrl}", method = RequestMethod.GET)
-//    public List<String> getProductImagesLinks(@PathVariable String category, @PathVariable String productNameUrl) throws IOException {
-//        List<String> productImagesLinks = new ArrayList<>();
-//        category = category.toLowerCase();
-//
-//        String resourcePath = "static/products/" + category + "/" + productNameUrl;
-//        ClassPathResource imagesFolder = new ClassPathResource(resourcePath);
-//        productImagesLinks = getImagesLinks(imagesFolder.getFile().listFiles(), category, productNameUrl);
-//        return productImagesLinks;
-//    }
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value="/kategoria/{category}/details/{productNameUrl}")
+    public List<String> getProductImagesLinks(@PathVariable String category, @PathVariable String productNameUrl) throws Exception {
 
-    private List<String> getImagesLinks(File[] listOfFiles, String category, String productNameUrl) {
-        List<String> imagesNames = new ArrayList<>();
-        for(int i = 0; i < listOfFiles.length; i++){
-            if(listOfFiles[i].getName().contains("big")){
-                imagesNames.add(listOfFiles[i].getName());
-            }
-        }
-
-        List<String> productImagesLinks = createProductImagesLinks(imagesNames, category, productNameUrl);
-        return productImagesLinks;
+        category = category.toLowerCase();
+        String resourcePath = "/static/products/" + category + "/" + productNameUrl;
+        List<String> productImagesPath = imageService.readFolderFromJar(resourcePath);
+        return imageService.getImagesLinks(productImagesPath, category, productNameUrl);
     }
 
-    private List<String> createProductImagesLinks(List<String> imagesNames, String category, String productNameUrl) {
-        List<String> productLinks = new ArrayList<>();
-        category = category.toUpperCase();
-        for(String imageName: imagesNames){
-            String imageLink = "http://localhost:8080/img/kategoria/" + category + "/" + productNameUrl + "/" + imageName.replace(".jpg", "");
-            productLinks.add(imageLink);
-        }
-        return productLinks;
-    }
-
-    @RequestMapping(value = "/links/{category}/{productNameUrl}", method = RequestMethod.GET)
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/links/{category}/{productNameUrl}")
     public ProductImageLinks getProductsImageLinkByCategory(@PathVariable String category, @PathVariable String productNameUrl) throws IOException {
-        System.out.println("IMAGE SERVICE START");
         //TODO: Checking if service contains given "category" and "productNameUrl" in resources.
-        ProductImageLinks productImageLinks = createProductImageLinks(category, productNameUrl);
-        System.out.println("IMAGE SERVICE END");
+        ProductImageLinks productImageLinks = imageService.createProductImageLinks(category, productNameUrl);
         return productImageLinks;
-    }
-
-    private ProductImageLinks createProductImageLinks(String category, String productNameUrl) {
-        ProductImageLinks productImages = new ProductImageLinks();
-
-        String fullImageLink = "http://localhost:8000/api/images/kategoria/" + category + "/" + productNameUrl;
-        productImages.setImageUrl(fullImageLink);
-        productImages.setHoveredImageUrl(fullImageLink + "-hovered");
-        return productImages;
     }
 }

@@ -65,7 +65,7 @@ public class ProductController {
         return categoriesList;
     }
 
-    @RequestMapping(value="/kategoria/{category}/{productNameUrl}", method = RequestMethod.GET)
+    @RequestMapping(value="/kategoria/{category}/details/{productNameUrl}", method = RequestMethod.GET)
     public ResponseEntity<Product> getProductDetails(@PathVariable String category, @PathVariable String productNameUrl){
         Product product = productService.getProductDetails(productNameUrl);
         return ResponseEntity
