@@ -30,7 +30,7 @@ public class ImageController {
 
     @RequestMapping(
             method = RequestMethod.GET,
-            value = {"/kategoria/{category}/{nameUrl}", "/kategoria/{ category}/{nameUrl}/{nameUrlExtra}"},
+            value = {"/kategoria/{category}/{nameUrl}", "/kategoria/{category}/{nameUrl}/{nameUrlExtra}"},
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<InputStreamResource> getImage(
             @PathVariable String category,
