@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 public class ProductController {
     private ProductService productService;

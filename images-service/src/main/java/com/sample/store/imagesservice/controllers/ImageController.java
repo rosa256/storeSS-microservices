@@ -15,7 +15,6 @@ import java.io.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 public class ImageController {
 
